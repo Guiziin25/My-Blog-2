@@ -1,0 +1,43 @@
+// Carregando Módulos
+    const express = require ('express')
+    const handlebars = require('express-handlebars')
+    const bodyParser = require('body-parser')
+    const app = express()
+    const admin = require ("./routes/admin")
+    const path = require("path")
+    const mongoose = require('mongoose')
+    const session = require('express-session')
+    const flash = require('connect-flash')
+
+//Configurações
+    // Sessão
+        app.use(session({
+            secret: "anything",
+            resave: true,
+            saveUninitialized: true
+        }))
+        app.use(flash())
+    // Middleware
+    // Body Parser
+        app.use(express.urlencoded({extended: true}))
+        app.use(express.json());
+    // Handlebars
+        app.engine('handlebars', handlebars.engine({defaultLayout: 'main'}))
+        app.set('view engine', 'handlebars');
+    // Mongoose
+        mongoose.Promise = global.Promise;
+        mongoose.connect("mongodb://localhost/myblog").then(() => {
+            console.log("Conectado ao mongo")
+        }).catch((err) => {
+            console.log("Erro ao se conectar: "+ err)
+        })
+    // Public
+    app.use(express.static('public'));
+
+//Rotas
+    app.use('/admin', admin)
+//Outros
+const PORT = 8081
+app.listen(PORT, ()=> {
+    console.log("O servidor está funcionando! ")
+})

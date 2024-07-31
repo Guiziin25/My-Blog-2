@@ -18,6 +18,10 @@
         }))
         app.use(flash())
     // Middleware
+        app.use((req, res, next) => {
+            res.locals.success_msg = req.flash("success_msg")
+            res.locals.error_msg = req.flash("error_msg")
+        })
     // Body Parser
         app.use(express.urlencoded({extended: true}))
         app.use(express.json());
